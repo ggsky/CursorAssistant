@@ -1,0 +1,31 @@
+[[permission]]
+identifier = "allow-all-commands"
+description = "Allow learning-edition IPC commands"
+commands.allow = [
+  "get_startup_state",
+  "get_license_status",
+  "activate_license",
+  "get_account_info",
+  "get_account_usage",
+  "switch_account",
+  "enable_software",
+  "disable_software",
+  "get_software_enable_status",
+  "get_auto_switch_enabled",
+  "set_auto_switch_enabled",
+  "reset_machine_code",
+  "get_current_permissions",
+  "get_latest_notice",
+  "get_consume_logs",
+  "get_cursor_path",
+  "save_cursor_path",
+  "find_cursor_path",
+  "get_app_info",
+  "get_cursor_version",
+  "reset_app",
+  "open_external",
+  "show_confirm_dialog",
+  "minimize_window",
+  "minimize_to_tray",
+  "request_quit"
+]

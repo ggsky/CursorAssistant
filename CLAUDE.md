@@ -1,0 +1,1 @@
+/workspace/scripts/ai-code/claude/CLAUDE.md

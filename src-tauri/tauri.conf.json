@@ -1,0 +1,69 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Cursor助手",
+  "version": "10.1.0",
+  "identifier": "com.learning.cursor-assist",
+  "build": {
+    "frontendDist": "../extracted"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src ipc: http://ipc.localhost"
+    },
+    "windows": [
+      {
+        "label": "splash",
+        "title": "启动中",
+        "url": "splash.html",
+        "width": 360,
+        "height": 440,
+        "resizable": false,
+        "decorations": false,
+        "center": true,
+        "visible": true
+      },
+      {
+        "label": "main",
+        "title": "Cursor助手",
+        "url": "index.html",
+        "width": 920,
+        "height": 640,
+        "minWidth": 800,
+        "minHeight": 560,
+        "resizable": true,
+        "decorations": false,
+        "center": true,
+        "visible": false
+      }
+    ],
+    "trayIcon": {
+      "id": "main",
+      "iconPath": "icons/tray-icon.png",
+      "tooltip": "Cursor助手"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/64x64.png",
+      "icons/128x128.png",
+      "icons/icon.png",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "wix": {
+        "language": "zh-CN"
+      },
+      "nsis": {
+        "languages": [
+          "SimpChinese",
+          "English"
+        ]
+      }
+    }
+  },
+  "plugins": {}
+}

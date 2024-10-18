@@ -1,0 +1,220 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost https: http:">
+  <title>Cursor助手</title>
+  <link rel="icon" type="image/png" href="assets/icon-32.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header" id="appHeader">
+      <div class="app-header-brand">
+        <img src="assets/icon-64.png" alt="" class="app-header-icon" width="28" height="28" draggable="false">
+        <div class="app-header-text">
+          <h1 class="app-header-title">Cursor助手</h1>
+          <span class="app-header-version" id="appVersion">--</span>
+        </div>
+      </div>
+      <div class="window-controls" data-no-drag="">
+        <button class="window-btn minimize" id="minimizeBtn" type="button" title="最小化">
+          <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2 6h8" stroke="currentColor" stroke-width="1.5"></path>
+          </svg>
+        </button>
+        <button class="window-btn tray" id="trayBtn" type="button" title="收起到系统托盘（任务栏不显示）">
+          <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <rect x="1.5" y="2" width="9" height="6" rx="0.8" stroke="currentColor" stroke-width="1.2"></rect>
+            <path d="M4 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <button class="window-btn close" id="closeBtn" type="button" title="关闭">
+          <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="main-columns">
+      <div class="main-col main-col-left">
+        <div class="card guide-section-card">
+          <div class="guide-card-head">
+            <h3 class="guide-card-title">使用说明</h3>
+          </div>
+          <div class="guide-steps">
+            <div class="guide-step-item">
+              <div class="guide-card-head">
+                <span class="guide-step-badge">1</span>
+                <div>
+                  <h4 class="guide-card-title">软件激活</h4>
+                  <p class="guide-card-desc">右侧输入卡号并激活，通过后即可使用。</p>
+                </div>
+              </div>
+            </div>
+            <div class="guide-step-item">
+              <div class="guide-card-head">
+                <span class="guide-step-badge">2</span>
+                <div>
+                  <h4 class="guide-card-title">设置 Cursor 安装目录</h4>
+                  <p class="guide-card-desc">首次会自动搜索；搜不到时请手动填写并保存。</p>
+                </div>
+              </div>
+            </div>
+            <div class="guide-step-item">
+              <div class="guide-card-head">
+                <span class="guide-step-badge">3</span>
+                <div>
+                  <h4 class="guide-card-title">无感换号</h4>
+                  <p class="guide-card-desc">激活后点「切换账号」即可换号，无需重启 Cursor。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card guide-section-card guide-card-notice" id="noticeCard" hidden="">
+          <div class="guide-card-head">
+            <h3 class="guide-card-title" id="noticeTitle">公告</h3>
+          </div>
+          <div class="announcement-list" id="announcementList">
+            <div class="announcement-content notice-html-body" id="noticeContent"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-col main-col-right control-panel">
+        <section class="activate-section">
+          <div class="activate-input-row">
+            <input type="text" id="licenseKey" placeholder="请输入卡号">
+            <button class="btn primary activate-btn" id="activateBtn" type="button">激活</button>
+          </div>
+          <div class="license-summary" id="licenseSummary" hidden="">
+            <div class="license-summary-item">
+              <span class="license-summary-label">当前授权码</span>
+              <span class="license-summary-value license-code" id="currentAuthCode">--</span>
+            </div>
+            <div class="license-summary-item">
+              <span class="license-summary-label">到期时间</span>
+              <span class="license-summary-value expire" id="expireTime">--</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="card cursor-path-panel" id="cursorPathPanel">
+          <h4>Cursor 安装目录</h4>
+          <div class="path-input-group">
+            <input type="text" id="cursorPath" placeholder="请输入 Cursor 安装目录路径" disabled="">
+            <button class="btn secondary" id="findCursorPathBtn" type="button" disabled="">自动搜索</button>
+            <button class="btn secondary" id="setCursorPathBtn" type="button" disabled="">保存</button>
+          </div>
+        </div>
+
+        <div class="card panel-card">
+          <div class="settings-list">
+            <div class="settings-rows">
+              <div class="settings-row" id="autoSwitchRow">
+                <span class="settings-label">自动换号</span>
+                <div class="settings-control">
+                  <label class="enable-switch" title="开启后按间隔自动切换账号">
+                    <input type="checkbox" id="autoSwitchEnableSwitch">
+                    <span class="enable-switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="settings-row">
+                <span class="settings-label">当前账号</span>
+                <span class="settings-value no-copy-email" id="accountName">未登录</span>
+              </div>
+              <div class="settings-row">
+                <span class="settings-label">剩余天数</span>
+                <span class="settings-value expire" id="remainingDays">--</span>
+              </div>
+              <div class="settings-row">
+                <span class="settings-label">Cursor版本</span>
+                <span class="settings-value version" id="cursorVersion">--</span>
+              </div>
+              <div class="settings-row">
+                <span class="settings-label">消费日志</span>
+                <button class="btn secondary consume-log-view-btn" id="viewConsumeLogsBtn" type="button" disabled="">查看</button>
+              </div>
+            </div>
+            <div class="action-bar panel-action-bar">
+              <button class="btn primary" id="switchAccountBtn" type="button" disabled="">切换账号</button>
+              <button class="btn danger" id="resetMachineBtn" type="button" disabled="">重置机器码</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <span id="toastMessage"></span>
+  </div>
+
+  <div class="dialog-overlay" id="dialogOverlay" hidden="">
+    <div class="dialog-card" id="dialogCard" role="dialog" aria-modal="true">
+      <div class="dialog-icon-wrap" id="dialogIconWrap" aria-hidden="true">
+        <img src="assets/icon-64.png" alt="" class="dialog-app-icon" width="64" height="64">
+      </div>
+      <h3 class="dialog-title" id="dialogTitle">提示</h3>
+      <p class="dialog-message" id="dialogMessage"></p>
+      <div class="dialog-actions" id="dialogActions">
+        <button class="btn secondary" id="dialogCancelBtn" type="button">取消</button>
+        <button class="btn primary" id="dialogConfirmBtn" type="button">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog-overlay" id="consumeLogsOverlay" hidden="">
+    <div class="consume-log-dialog" role="dialog" aria-modal="true" aria-labelledby="consumeLogsTitle">
+      <div class="consume-log-dialog-header">
+        <span id="consumeLogsTitle">消费日志</span>
+        <button class="btn secondary" id="closeConsumeLogsBtn" type="button">关闭</button>
+      </div>
+      <div class="consume-log-summary">
+        <span id="consumeLogsSummaryLabel">换号次数</span>
+        <strong id="consumeLogsCount">0</strong>
+      </div>
+      <div class="consume-log-table-wrap">
+        <table class="consume-log-table" id="consumeLogsTable" hidden="">
+          <thead>
+            <tr>
+              <th class="consume-log-col-index">序号</th>
+              <th class="consume-log-col-time">消费时间</th>
+              <th class="consume-log-col-email">邮箱</th>
+              <th class="consume-log-col-ip">客户端IP</th>
+            </tr>
+          </thead>
+          <tbody id="consumeLogsTbody"></tbody>
+        </table>
+        <div class="consume-log-empty" id="consumeLogsEmpty">正在加载...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="permission-alert-overlay" id="permissionAlertOverlay" hidden="">
+    <div class="permission-alert-box" role="dialog" aria-modal="true">
+      <div class="permission-alert-icon" aria-hidden="true">⚠️</div>
+      <div class="permission-alert-title">需要管理员权限</div>
+      <div class="permission-alert-content">
+        <p>重置机器码需要管理员权限，<strong>请按以下步骤操作：</strong></p>
+        <ol>
+          <li><strong>关闭</strong>当前程序</li>
+          <li><strong>右键</strong>程序图标</li>
+          <li>选择「<strong>以管理员身份运行</strong>」</li>
+          <li>重新以管理员身份打开后再重试</li>
+        </ol>
+      </div>
+      <div class="permission-alert-buttons">
+        <button class="permission-alert-btn" id="permissionAlertOkBtn" type="button">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="tauri-api.js"></script>
+  <script src="renderer.js"></script>
+
+
+</body></html>
